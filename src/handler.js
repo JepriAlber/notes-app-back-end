@@ -115,6 +115,32 @@ const editNoteByIdHandler = (request, h) => {
   return response;
 };
 
+const deleteNoteByIdHendler = (request, h) => {
+  const { id } = request.params;
+  const index = notes.findIndex((note) => note.id === id);
+
+  if (index !== -1) {
+    // untuk menghapus array berdasarkan index bisa menggunakan method splice
+    notes.splice(index, 1);
+
+    const response = h.response({
+      status: 'Success',
+      message: 'Notes berhasil dihapus!',
+    });
+
+    response.code(201);
+    return response;
+  }
+
+  const response = h.response({
+    status: 'Fail',
+    message: 'Notes gagal untuk dihapus, Id tidak ditemukan',
+  });
+
+  response.code(404);
+  return response;
+};
+
 module.exports = {
-  addNoteHandler, getAllNoteHandler, getByIdNoteHandler, editNoteByIdHandler,
+  addNoteHandler, getAllNoteHandler, getByIdNoteHandler, editNoteByIdHandler, deleteNoteByIdHendler,
 };
