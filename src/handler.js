@@ -9,6 +9,7 @@ const addNoteHandler = (request, h) => {
   const createdAT = new Date().toISOString();
   const updatedAT = createdAT;
 
+  // buat variabel untuk menampung data terlebih dahulu.
   const newNote = {
     title, tag, body, id, createdAT, updatedAT,
   };
@@ -38,7 +39,42 @@ const addNoteHandler = (request, h) => {
     message: 'Catatan gagal ditambahkan!',
   });
   response.code = 500;
+
   return response;
 };
 
-module.exports = { addNoteHandler };
+// Tidak diperlukan parameter karna perlu mengembalikan semua data yang ada.
+const getAllNoteHandler = () => ({
+  status: 'Success',
+  data: {
+    notes,
+  },
+});
+
+const getByIdNoteHandler = (request, h) => {
+  const { id } = request.params; // mengambil data id yang di request
+
+  // buat variabel baru untuk filter apakah ada data dengan id yang diminta.
+  const note = notes.filter((n) => n.id === id)[0];
+
+  // jika ada data id yang diminta maka beri respon dengan membawa data yang diminta
+  if (note !== undefined) {
+    return {
+      status: 'Success',
+      data: {
+        note,
+      },
+    };
+  }
+
+  // jika data tidak ditemukan maka beri respon sebagai berikut.
+  const response = h.response({
+    status: 'Fail',
+    message: 'Catatan tidak dapat ditemukan',
+  });
+
+  response.code(404);
+  return response;
+};
+
+module.exports = { addNoteHandler, getAllNoteHandler, getByIdNoteHandler };
