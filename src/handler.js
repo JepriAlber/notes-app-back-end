@@ -23,13 +23,13 @@ const addNoteHandler = (request, h) => {
   // lakukan respon terhadap data masuk apakah berhasil atau tidak
   if (isSucces) {
     const response = h.response({
-      status: 'Success',
-      message: 'Catatan berhasil ditambahakan!',
+      status: 'success',
+      message: 'Catatan berhasil ditambahkan',
       data: {
-        noteID: id,
+        noteId: id,
       },
     });
-    response.code = 201;
+    response.code(201);
     return response;
   }
 
@@ -38,14 +38,14 @@ const addNoteHandler = (request, h) => {
     status: 'Fail',
     message: 'Catatan gagal ditambahkan!',
   });
-  response.code = 500;
+  response.code(500);
 
   return response;
 };
 
 // Tidak diperlukan parameter karna perlu mengembalikan semua data yang ada.
 const getAllNoteHandler = () => ({
-  status: 'Success',
+  status: 'success',
   data: {
     notes,
   },
@@ -60,7 +60,7 @@ const getByIdNoteHandler = (request, h) => {
   // jika ada data id yang diminta maka beri respon dengan membawa data yang diminta
   if (note !== undefined) {
     return {
-      status: 'Success',
+      status: 'success',
       data: {
         note,
       },
@@ -69,7 +69,7 @@ const getByIdNoteHandler = (request, h) => {
 
   // jika data tidak ditemukan maka beri respon sebagai berikut.
   const response = h.response({
-    status: 'Fail',
+    status: 'fail',
     message: 'Catatan tidak dapat ditemukan',
   });
 
@@ -98,7 +98,7 @@ const editNoteByIdHandler = (request, h) => {
     };
 
     const response = h.response({
-      status: 'Success',
+      status: 'success',
       message: 'Catatan berhasil diperbaharui!',
     });
 
@@ -107,7 +107,7 @@ const editNoteByIdHandler = (request, h) => {
   }
 
   const response = h.response({
-    status: 'Fail',
+    status: 'fail',
     message: 'Gagal memperbaharui catatan, Id tidak ditemukan',
   });
 
@@ -124,16 +124,16 @@ const deleteNoteByIdHendler = (request, h) => {
     notes.splice(index, 1);
 
     const response = h.response({
-      status: 'Success',
-      message: 'Notes berhasil dihapus!',
+      status: 'success',
+      message: 'Catatan berhasil dihapus',
     });
 
-    response.code(201);
+    response.code(200);
     return response;
   }
 
   const response = h.response({
-    status: 'Fail',
+    status: 'fail',
     message: 'Notes gagal untuk dihapus, Id tidak ditemukan',
   });
 
