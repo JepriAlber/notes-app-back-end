@@ -2,45 +2,57 @@ const { nanoid } = require('nanoid');
 const notes = require('./notes');
 
 const addNoteHandler = (request, h) => {
-  const { title, tag, body } = request.payload;
+  // membuat validation untuk penambahan note
+  try {
+    const { title, tag, body } = request.payload;
 
-  // membuat id unix dengan pihak ketika
-  const id = nanoid(16);
-  const createdAT = new Date().toISOString();
-  const updatedAT = createdAT;
+    // validation title, tag, body tidak boleh kosong salah satunya
+    if (!title || !tag || !body) {
+      throw new Error();
+    }
 
-  // buat variabel untuk menampung data terlebih dahulu.
-  const newNote = {
-    title, tag, body, id, createdAT, updatedAT,
-  };
+    // membuat id unix dengan pihak ketika
+    const id = nanoid(16);
+    const createdAT = new Date().toISOString();
+    const updatedAT = createdAT;
 
-  // masukan data baru ke array notes.
-  notes.push(newNote);
+    // buat variabel untuk menampung data terlebih dahulu.
+    const newNote = {
+      title, tag, body, id, createdAT, updatedAT,
+    };
 
-  // lakukan pengecekan apakah data sudah masuk atau belum, kita bisa mengeceknya dengan filter.
-  const isSucces = notes.filter((note) => note.id === id).length > 0;
+    // masukan data baru ke array notes.
+    notes.push(newNote);
 
-  // lakukan respon terhadap data masuk apakah berhasil atau tidak
-  if (isSucces) {
+    // lakukan pengecekan apakah data sudah masuk atau belum, kita bisa mengeceknya dengan filter.
+    const isSucces = notes.filter((note) => note.id === id).length > 0;
+
+    // validation apakah berhasil atau tidak
+    if (!isSucces) {
+      throw new Error();
+    }
+
+    // lakukan respon terhadap data masuk apakah berhasil atau tidak
+    if (isSucces) {
+      const response = h.response({
+        status: 'success',
+        message: 'Catatan berhasil ditambahkan',
+        data: {
+          noteId: id,
+        },
+      });
+      response.code(201);
+      return response;
+    }
+  } catch (error) {
+    // buat respon jika data catatan gagal ditambahkan
     const response = h.response({
-      status: 'success',
-      message: 'Catatan berhasil ditambahkan',
-      data: {
-        noteId: id,
-      },
+      status: 'fail',
+      message: 'Catatan gagal ditambahkan',
     });
-    response.code(201);
+    response.code(500);
     return response;
   }
-
-  // buat respon jika data catatan gagal ditambahkan
-  const response = h.response({
-    status: 'Fail',
-    message: 'Catatan gagal ditambahkan!',
-  });
-  response.code(500);
-
-  return response;
 };
 
 // Tidak diperlukan parameter karna perlu mengembalikan semua data yang ada.
